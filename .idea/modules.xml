@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/KoloFortuny.iml" filepath="$PROJECT_DIR$/KoloFortuny.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FXGUI.iml" filepath="$PROJECT_DIR$/FXGUI.iml" />
     </modules>
   </component>
 </project>
