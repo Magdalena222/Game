@@ -1,24 +1,22 @@
-package sample;
+package main;
 
+import gui.MainWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = new GridPane();
-        try{
-            root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+//        Parent root = FXMLLoader.load(getClass().getResource("../gui/MainWindow.fxml"));
+        FXMLLoader load = new FXMLLoader(getClass().getResource("../gui/MainWindow.fxml"));
+        load.setController(new MainWindowController());
+
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(load.load(), 800, 400));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
