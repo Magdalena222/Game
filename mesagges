@@ -1,0 +1,8 @@
+Message <fromUser>;<chat/game>;<messageSpecyfic>
+ChatMessage <fromUser>;<chat/game>;< <general/<roomName> >;<MessageText>
+GameMessage <fromUser>;<chat/game>;<roomName>;<command>[;<commandData>]
+
+GameCreateRoomCommand <fromUser>;game;<roomName>;create
+GameJoinRoomCommand <fromUser>;game;<roomName>;join
+GameStartRoomCommand <fromUser>;game;<roomName>;start[;<password>]
+GameFailStartRoomCommand <fromUser>;game;<roomName>;failStart;<reason>
