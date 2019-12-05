@@ -10,7 +10,7 @@
             fx:controller="gui.game.RoomListController" >
     <top>
         <HBox fillHeight="true" >
-            <Button fx:id="createButton" text="Utwórz pokój" prefWidth="200" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button fx:id="createButton" onAction="#add" text="Utwórz pokój" prefWidth="200" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
             <Button fx:id="joinButton" onAction="#join" text="Dołącz" prefWidth="200" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
         </HBox>
     </top>
@@ -18,11 +18,6 @@
         <ListView fx:id="list" >
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="One"/>
-                    <String fx:value="Two"/>
-                    <String fx:value="Three"/>
-                    <String fx:value="Four"/>
-                    <String fx:value="Five"/>
                 </FXCollections>
             </items>
         </ListView>

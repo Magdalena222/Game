@@ -15,8 +15,4 @@
 <!--        <fx:include source="game/roomList.fxml" />-->
     </center>
 
-    <right>
-        <fx:include source="chat/chat.fxml" />
-    </right>
-
 </BorderPane>
