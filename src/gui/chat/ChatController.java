@@ -1,7 +1,7 @@
 package gui.chat;
 
 import frontend.IBroadcastListener;
-import frontend.Receiver;
+import frontend.BroadcastReceiver;
 import frontend.Sender;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,15 +15,15 @@ public class ChatController implements IBroadcastListener {
 
     @FXML public TextArea textArea;
     @FXML public TextField textField;
-    protected Receiver receiver;
+    protected BroadcastReceiver broadcastReceiver;
 
 
 
     @FXML
     public void initialize() {
         try {
-            receiver = new Receiver(this);
-            receiver.start();
+            broadcastReceiver = new BroadcastReceiver(this);
+            broadcastReceiver.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

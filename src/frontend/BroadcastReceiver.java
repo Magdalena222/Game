@@ -5,13 +5,13 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public class Receiver extends Thread {
+public class BroadcastReceiver extends Thread {
     protected MulticastSocket socket = null;
     protected byte[] buf = new byte[256];
     protected InetAddress group;
     protected IBroadcastListener listener;
 
-    public Receiver(IBroadcastListener listener) throws IOException {
+    public BroadcastReceiver(IBroadcastListener listener) throws IOException {
         socket = new MulticastSocket(777);
         group = InetAddress.getByName("230.0.0.0");
         socket.joinGroup(group);

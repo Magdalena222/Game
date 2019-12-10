@@ -25,6 +25,7 @@ public class MessageHandler implements IMessageHandler{
     }
 
     public void handle(String[] msg){
+        if(msg.length>1)
         switch (msg[1]){
             case "chat":
                 chatHandler.handle(msg);

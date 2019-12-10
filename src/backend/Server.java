@@ -32,21 +32,22 @@ public class Server extends Thread {
             } catch (IOException e) {
                 System.out.println("Error: " + e.getMessage());
             }
-
+            if(isInterrupted()){
+                server.close();
+                break;
+            }
         }
     }
 
     protected void handle(DatagramPacket dp) throws IOException {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         String msg = new String(dp.getData());
         String[] message = msg.split(";");
 
         if(!clients.containsKey(message[0])){
             clients.put(message[0], new ClientInfo(dp.getAddress(), dp.getPort(), message[0]));
+            for (ClientInfo info: clients.values()) {
+                System.out.println(info);
+            }
         }
         handler.handle(message);
     }
