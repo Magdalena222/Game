@@ -1,6 +1,7 @@
 package gui;
 
 
+import frontend.Sender;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
@@ -21,6 +22,7 @@ public class Controller {
     private void signinbtnclick(ActionEvent event) throws Exception{
 
         String nickText = nick.getText();
+        Sender.getInstance().send(nickText + ";game;login;"+Sender.getInstance().getClientInfo().toString());
         nickVeri.setText("OK");
         nickVeri.setTextFill(Color.web("#004d08"));
         nickVeri.setVisible(true);

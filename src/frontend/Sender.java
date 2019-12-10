@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.ClientInfo;
 import backend.Server;
 
 import java.io.IOException;
@@ -28,5 +29,13 @@ public class Sender {
         int msgLenght = msg.length();
         DatagramPacket p = new DatagramPacket(msg.getBytes(), msgLenght, InetAddress.getByName("localhost"), 666);
         socket.send(p);
+    }
+
+    public ClientInfo getClientInfo(){
+        try {
+            return new ClientInfo(InetAddress.getByName("localhost"), 666);
+        }catch(IOException e){
+            return null;
+        }
     }
 }

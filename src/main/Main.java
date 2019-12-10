@@ -1,6 +1,7 @@
 package main;
 
 import backend.ChatMessageHandler;
+import backend.GameMessageHandler;
 import backend.MessageHandler;
 import backend.Server;
 import frontend.Sender;
@@ -20,6 +21,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 //        Parent root = FXMLLoader.load(getClass().getResource("../gui/MainWindow.fxml"));
         FXMLLoader load = new FXMLLoader(getClass().getResource("../gui/login.fxml"));
+//        FXMLLoader load = new FXMLLoader(getClass().getResource("../gui/MainWindow.fxml"));
 //        load.setController(new Controller());
 
         primaryStage.setTitle("Hello World");
@@ -42,7 +44,7 @@ public class Main extends Application {
         try{
             System.out.println("Staring server...");
             server = new Server("Server");
-            server.setHandler(new MessageHandler(server,new ChatMessageHandler(server), s-> {System.out.println(s[2]);}));
+            server.setHandler(new MessageHandler(server,new ChatMessageHandler(server), new GameMessageHandler(server)));
             server.start();
         }catch(Exception e){
             System.err.println("Failed to start server!");

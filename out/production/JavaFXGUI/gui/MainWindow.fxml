@@ -12,7 +12,7 @@
     </left>
 
     <center>
-<!--        <fx:include source="game/roomList.fxml" />-->
+        <fx:include source="game/roomList.fxml" />
     </center>
 
 </BorderPane>
