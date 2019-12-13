@@ -6,9 +6,9 @@
             xmlns:fx="http://javafx.com/fxml"
             minWidth="800.0" maxWidth="800.0"
             minHeight="400.0" maxHeight="400.0"
+            fx:controller="gui.MainWindowController"
             fx:id="mainPane" >
     <left>
-        <fx:include source="chat/chat.fxml" />
     </left>
 
     <center>

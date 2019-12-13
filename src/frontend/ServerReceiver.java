@@ -2,19 +2,19 @@ package frontend;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Arrays;
 
-public class BroadcastReceiver extends Thread {
-    protected MulticastSocket socket = null;
-    protected byte[] buf = new byte[256];
-    protected InetAddress group;
-    protected IBroadcastListener listener;
+public class ServerReceiver extends Thread {
 
-    public BroadcastReceiver(IBroadcastListener listener) throws IOException {
-        socket = new MulticastSocket(755);
-        group = InetAddress.getByName("230.0.0.0");
-        socket.joinGroup(group);
+    public static final int PORT = 477;
+    protected IServerListener listener;
+    protected DatagramSocket socket;
+
+    public ServerReceiver(IServerListener listener) throws IOException {
+        socket = new DatagramSocket(PORT);
         this.listener = listener;
     }
 
@@ -23,10 +23,10 @@ public class BroadcastReceiver extends Thread {
             DatagramPacket packet = new DatagramPacket(new byte[256], 256);
             try {
                 socket.receive(packet);
-                System.out.println("Broadcast received " + new String(packet.getData()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.println("Echh... " + new String(packet.getData()));
             listener.listen(packet.getData());
             if(this.isInterrupted()){
                 socket.close();

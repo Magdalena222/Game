@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 
@@ -16,7 +17,7 @@ public class ChatController implements IBroadcastListener {
     @FXML public TextArea textArea;
     @FXML public TextField textField;
     protected BroadcastReceiver broadcastReceiver;
-
+    protected String name;
 
 
     @FXML
@@ -31,7 +32,8 @@ public class ChatController implements IBroadcastListener {
 
     public void onEnter(ActionEvent ae){
         try {
-            Sender.getInstance().send("client;chat;"+textField.getText());
+            System.out.println("Chat is sending " + name + ";chat;"+textField.getText());
+            Sender.getInstance().send(name + ";chat;"+textField.getText());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,5 +48,10 @@ public class ChatController implements IBroadcastListener {
                 textArea.setText(s[0] + ": " + s[2] + "\n" + textArea.getText());
             }
         });
+    }
+
+    public void setName(String name) {
+        System.out.println("Setting name to " + name);
+        this.name = name;
     }
 }

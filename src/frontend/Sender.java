@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.net.*;
 
 public class Sender {
+    private final int PORT = 999;
     private DatagramSocket socket;
     private static Sender instance;
 
     private Sender() throws SocketException {
-        socket = new DatagramSocket(999);
+        socket = new DatagramSocket(PORT);
     }
 
     public static Sender getInstance(){
@@ -33,7 +34,7 @@ public class Sender {
 
     public ClientInfo getClientInfo(){
         try {
-            return new ClientInfo(InetAddress.getByName("localhost"), 666);
+            return new ClientInfo(InetAddress.getByName("localhost"), PORT);
         }catch(IOException e){
             return null;
         }
