@@ -17,7 +17,7 @@ public class Broadcast{
     }
 
     public void send(byte[] data) throws IOException {
-        DatagramPacket packet = new DatagramPacket(data, data.length, group, 777);
+        DatagramPacket packet = new DatagramPacket(data, data.length, group, 755);
         socket.send(packet);
         socket.close();
     }

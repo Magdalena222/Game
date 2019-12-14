@@ -1,8 +1,12 @@
 package backend;
 
+import backend.logic.Room;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class Server extends Thread {
@@ -11,11 +15,14 @@ public class Server extends Thread {
     Map<String, ClientInfo> clients;
     String name;
     IMessageHandler handler;
+    List<Room> rooms;
 
     public Server(String name) throws IOException {
         this.clients = new HashMap<String, ClientInfo>();
         this.name = name;
         this.server = new DatagramSocket(666);
+        rooms = new LinkedList<Room>();
+        rooms.add(new Room("Koko"));
     }
 
     public void setHandler(IMessageHandler handler) {
@@ -41,28 +48,22 @@ public class Server extends Thread {
 
     protected void handle(DatagramPacket dp) throws IOException {
         String msg = new String(dp.getData());
+        System.out.println("Server received: " + msg);
         String[] message = msg.split(";");
-
-//        if(!clients.containsKey(message[0])){
-//            clients.put(message[0], new ClientInfo(dp.getAddress(), dp.getPort(), message[0]));
-//            for (ClientInfo info: clients.values()) {
-//                System.out.println(info);
-//            }
-//        }
         handler.handle(message);
     }
 
     public String checkLogin(String nick, String host, int port){
         String msg;
         if(clients.containsKey(nick)){
-            msg = "server;game;login;fail;"+"Podany login juz istnieje";
+            msg = "server;game;login;fail;"+nick+";Podany login juz istnieje\n";
         }else{
             try{
                 clients.put(nick, new ClientInfo(InetAddress.getByName(host), port, nick));
             }catch(UnknownHostException e){
                 System.err.println(e.getMessage());
             }
-            msg = "server;game;login;ok;";
+            msg = "server;game;login;ok;" + nick;
         }
         return msg;
     }
@@ -76,5 +77,18 @@ public class Server extends Thread {
 
     public ClientInfo getClientInfo(String name){
         return clients.get(name);
+    }
+
+    public void sendRoomList(String name) {
+        String roomsString = name+";game;roomList;all";
+        for (Room room:rooms) {
+            roomsString = roomsString + ";" + room.getName() + ";" + room.getPlayer1() + ";" + room.getPlayer2();
+        }
+        ClientInfo clientInfo = clients.get(name);
+        try {
+            send(roomsString.getBytes(), clientInfo.address, clientInfo.port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

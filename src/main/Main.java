@@ -11,7 +11,7 @@ public class Main{
         try{
             System.out.println("Staring server...");
             Server server = new Server("Server");
-            server.setHandler(new MessageHandler(server,new ChatMessageHandler(server), s-> {System.out.println(s[2]);}));
+            server.setHandler(new MessageHandler(server,new ChatMessageHandler(server), new GameMessageHandler(server)));
             server.start();
         }catch(Exception e){
             System.err.println("Failed to start server!");

@@ -7,6 +7,8 @@ public class Room {
 
     public Room(String name) {
         this.name = name;
+        player1 = "Wolny";
+        player2 = "Wolny";
     }
 
     public String getName() {

@@ -20,7 +20,7 @@ public class BroadcastReceiver extends Thread {
 
     public void run() {
         while (true) {
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            DatagramPacket packet = new DatagramPacket(new byte[256], 256);
             try {
                 socket.receive(packet);
             } catch (IOException e) {
