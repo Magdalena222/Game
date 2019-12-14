@@ -44,7 +44,6 @@ public class Main extends Application {
     }
 
     public void login(String name){
-        System.out.println("Zalogowano " + name);
         FXMLLoader load = new FXMLLoader(getClass().getResource("../gui/MainWindow.fxml"));
         try {
             primaryStage.setScene(new Scene(load.load(), 800,400));

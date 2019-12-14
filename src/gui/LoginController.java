@@ -1,16 +1,12 @@
 package gui;
 
 
-import backend.Server;
-import frontend.IServerListener;
+import frontend.IServerLoginListener;
 import frontend.Sender;
-import frontend.ServerReceiver;
+import frontend.ServerLoginReceiver;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import main.Main;
@@ -18,14 +14,14 @@ import main.Main;
 import java.io.IOException;
 
 
-public class LoginController implements IServerListener {
+public class LoginController implements IServerLoginListener {
 
     protected Main parent;
-    protected ServerReceiver receiver;
+    protected ServerLoginReceiver receiver;
 
     public LoginController() {
         try {
-            receiver = new ServerReceiver(this);
+            receiver = new ServerLoginReceiver(this);
             receiver.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,19 +41,21 @@ public class LoginController implements IServerListener {
     }
 
     @Override
-    public void listen(byte[] msg) {
+    public void loginOK(String name) {
         Platform.runLater(new Runnable() {
             public void run() {
-                String xxx = new String(msg);
-                System.out.println("Listen " + xxx);
-                String[] message = xxx.split(";");
-                if(message[3].equals("ok"))
-                    parent.login(message[4]);
-                else{
-                    nickVeri.setText("Podany login już istnieje");
-                    nickVeri.setVisible(true);
-                }
+                parent.login(name);
+            }
+        });
+        receiver.interrupt();
+    }
 
+    @Override
+    public void loginFailed(String msg) {
+        Platform.runLater(new Runnable() {
+            public void run() {
+                nickVeri.setText(msg);
+                nickVeri.setVisible(true);
             }
         });
     }

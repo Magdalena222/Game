@@ -51,7 +51,6 @@ public class ChatController implements IBroadcastListener {
     }
 
     public void setName(String name) {
-        System.out.println("Setting name to " + name);
         this.name = name;
     }
 }

@@ -8,11 +8,5 @@
             minHeight="400.0" maxHeight="400.0"
             fx:controller="gui.MainWindowController"
             fx:id="mainPane" >
-    <left>
-    </left>
-
-    <center>
-        <fx:include source="game/roomList.fxml" />
-    </center>
 
 </BorderPane>

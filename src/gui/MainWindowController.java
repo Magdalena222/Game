@@ -37,7 +37,7 @@ public class MainWindowController {
     }
 
     public void setName(String name) {
-        System.out.println("Setting name");
         generalChat.<ChatController>getController().setName(name);
+        roomList.<RoomListController>getController().setName(name);
     }
 }
