@@ -37,26 +37,20 @@ public class LoginController implements IServerLoginListener {
     @FXML
     private void signinbtnclick(ActionEvent event) throws Exception{
         String nickText = nick.getText();
-        Sender.getInstance().send(nickText + ";game;login;localhost;" + receiver.PORT);
+        Sender.getInstance().send(nickText.trim() + ";game;login;localhost;" + receiver.PORT);
     }
 
     @Override
     public void loginOK(String name) {
-        Platform.runLater(new Runnable() {
-            public void run() {
-                parent.login(name);
-            }
-        });
+        Platform.runLater(() -> parent.login(name) );
         receiver.interrupt();
     }
 
     @Override
     public void loginFailed(String msg) {
-        Platform.runLater(new Runnable() {
-            public void run() {
-                nickVeri.setText(msg);
-                nickVeri.setVisible(true);
-            }
+        Platform.runLater(() ->{
+            nickVeri.setText(msg);
+            nickVeri.setVisible(true);
         });
     }
 

@@ -1,10 +1,9 @@
 package gui.game;
 
 import backend.logic.Room;
-import frontend.IServerRoomListListener;
-import frontend.Sender;
-import frontend.ServerRoomListReceiver;
+import frontend.*;
 import gui.MainWindowController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -16,7 +15,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.util.Optional;
 
-public class RoomListController implements IServerRoomListListener {
+public class RoomListController implements IServerRoomListListener, IBroadcastListener {
 
     @FXML public ListView list;
     protected MainWindowController parent;
@@ -38,6 +37,7 @@ public class RoomListController implements IServerRoomListListener {
 
     @FXML
     public void initialize() {
+        BroadcastReceiver.getInstance().addListener(this);
         list.setCellFactory(new Callback<ListView<Room>, ListCell<Room>>() {
 
             @Override
@@ -105,5 +105,32 @@ public class RoomListController implements IServerRoomListListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void listen(byte[] msg) {
+        RoomListController _this = this;
+        Platform.runLater(new Runnable() {
+            public void run() {
+                String[] s = new String(msg).split(";");
+                if(s[1].equals("game")) {
+                    switch(s[2]){
+                        case "roomList":
+                            switch (s[3]){
+                                case "create":
+                                    if(s[4].equals("ok")){
+                                        System.out.println("Tworzymy pokój " + s[5].trim());
+                                        Room r = new Room(s[5]);
+                                        r.setPlayer1(_this.name);
+                                        list.getItems().add(r);
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+
+                }
+            }
+        });
     }
 }

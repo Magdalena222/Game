@@ -40,7 +40,9 @@ public class ChatController implements IBroadcastListener {
         Platform.runLater(new Runnable() {
             public void run() {
                 String[] s = new String(msg).split(";");
-                textArea.setText(s[0] + ": " + s[2] + "\n" + textArea.getText());
+                if(s[1].equals("chat")) {
+                    textArea.setText(s[0] + ": " + s[2] + "\n" + textArea.getText());
+                }
             }
         });
     }
