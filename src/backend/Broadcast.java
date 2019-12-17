@@ -16,7 +16,8 @@ public class Broadcast{
         group = InetAddress.getByName("230.0.0.0");
     }
 
-    public void send(byte[] data) throws IOException {
+    public synchronized void send(byte[] data) throws IOException {
+        System.out.println("Sending by broadcast: " + new String(data));
         DatagramPacket packet = new DatagramPacket(data, data.length, group, 755);
         socket.send(packet);
         socket.close();

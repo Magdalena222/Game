@@ -30,6 +30,11 @@ public class GameMessageHandler implements IMessageHandler{
                         case "getAll":
                             server.sendRoomList(msg[0]);
                             break;
+                        case "create":
+                            server.createRoom(msg[0], msg[4]);
+                            break;
+                        default:
+                            System.err.println("Unrecognised message!");
                     }
                     break;
                 default:

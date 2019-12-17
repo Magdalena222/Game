@@ -15,14 +15,14 @@ public class Server extends Thread {
     Map<String, ClientInfo> clients;
     String name;
     IMessageHandler handler;
-    List<Room> rooms;
+    Map<String, Room> rooms;
 
     public Server(String name) throws IOException {
         this.clients = new HashMap<String, ClientInfo>();
         this.name = name;
         this.server = new DatagramSocket(666);
-        rooms = new LinkedList<Room>();
-        rooms.add(new Room("Koko"));
+        rooms = new HashMap<String, Room>();
+        rooms.put("Koko", new Room("Koko"));
     }
 
     public void setHandler(IMessageHandler handler) {
@@ -81,7 +81,7 @@ public class Server extends Thread {
 
     public void sendRoomList(String name) {
         String roomsString = name+";game;roomList;all";
-        for (Room room:rooms) {
+        for (Room room:rooms.values()) {
             roomsString = roomsString + ";" + room.getName() + ";" + room.getPlayer1() + ";" + room.getPlayer2();
         }
         ClientInfo clientInfo = clients.get(name);
@@ -89,6 +89,22 @@ public class Server extends Thread {
             send(roomsString.getBytes(), clientInfo.address, clientInfo.port);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void createRoom(String clientName, String roomName){
+        if(rooms.containsKey(roomName)) {
+            try {
+                send("server;game;roomList;create;failed;Istnieje już pokój o podanej nazwie".getBytes(), clients.get(clientName).address, clients.get(clientName).port);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                new Broadcast().send(("server;game;roomList;create;ok;"+roomName+";"+clientName).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
