@@ -7,16 +7,14 @@ import frontend.ServerRoomListReceiver;
 import gui.MainWindowController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class RoomListController implements IServerRoomListListener {
 
@@ -80,7 +78,19 @@ public class RoomListController implements IServerRoomListListener {
 
     @FXML
     public void add(ActionEvent e){
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Tworzenie nowego pokoju");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Podaj nazwę pokoju:");
 
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(name -> {
+            try {
+                Sender.getInstance().send(this.name.trim() + ";game;roomList;create;" + name);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     @Override

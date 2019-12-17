@@ -22,18 +22,13 @@ public class ChatController implements IBroadcastListener {
 
     @FXML
     public void initialize() {
-        try {
-            broadcastReceiver = new BroadcastReceiver(this);
-            broadcastReceiver.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BroadcastReceiver.getInstance().addListener(this);
     }
 
     public void onEnter(ActionEvent ae){
         try {
             System.out.println("Chat is sending " + name + ";chat;"+textField.getText());
-            Sender.getInstance().send(name + ";chat;"+textField.getText());
+            Sender.getInstance().send(name.trim() + ";chat;"+textField.getText());
         } catch (IOException e) {
             e.printStackTrace();
         }
