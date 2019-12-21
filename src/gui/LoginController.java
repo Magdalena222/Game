@@ -1,9 +1,8 @@
 package gui;
 
 
-import frontend.IServerLoginListener;
 import frontend.Sender;
-import frontend.ServerLoginReceiver;
+import frontend.ServerReceiver;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,18 +13,11 @@ import main.Main;
 import java.io.IOException;
 
 
-public class LoginController implements IServerLoginListener {
+public class LoginController{
 
     protected Main parent;
-    protected ServerLoginReceiver receiver;
 
     public LoginController() {
-        try {
-            receiver = new ServerLoginReceiver(this);
-            receiver.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -37,16 +29,9 @@ public class LoginController implements IServerLoginListener {
     @FXML
     private void signinbtnclick(ActionEvent event) throws Exception{
         String nickText = nick.getText();
-        Sender.getInstance().send(nickText.trim() + ";game;login;localhost;" + receiver.PORT);
+        Sender.getInstance().send(nickText.trim() + ";game;login;localhost;" + ServerReceiver.PORT);
     }
 
-    @Override
-    public void loginOK(String name) {
-        Platform.runLater(() -> parent.login(name) );
-        receiver.interrupt();
-    }
-
-    @Override
     public void loginFailed(String msg) {
         Platform.runLater(() ->{
             nickVeri.setText(msg);

@@ -12,18 +12,12 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 
-public class ChatController implements IBroadcastListener {
+public class GeneralChatController implements IBroadcastListener {
 
     @FXML public TextArea textArea;
     @FXML public TextField textField;
-    protected BroadcastReceiver broadcastReceiver;
     protected String name;
 
-
-    @FXML
-    public void initialize() {
-        BroadcastReceiver.getInstance().addListener(this);
-    }
 
     public void onEnter(ActionEvent ae){
         try {

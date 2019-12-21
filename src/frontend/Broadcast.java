@@ -1,4 +1,4 @@
-package backend;
+package frontend;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -1,5 +1,7 @@
 package backend;
 
+import frontend.Broadcast;
+
 import java.io.IOException;
 
 public class ChatMessageHandler implements IMessageHandler{

@@ -9,16 +9,15 @@ import java.net.DatagramSocket;
 public class ServerRoomListReceiver extends Thread {
 
     public static final int PORT = 477;
-    protected IServerRoomListListener listener;
     protected DatagramSocket socket;
 
-    public ServerRoomListReceiver(IServerRoomListListener listener) throws IOException {
-        System.out.println("Staring ServerRoomListReceiver");
+    public ServerRoomListReceiver() throws IOException {
         socket = new DatagramSocket(PORT);
-        this.listener = listener;
+        socket.setSoTimeout(1000);
     }
 
     public void run() {
+        System.out.println("Staring ServerRoomListReceiver");
         boolean done = false;
         while (!done) {
             DatagramPacket packet = new DatagramPacket(new byte[256], 256);
@@ -37,7 +36,7 @@ public class ServerRoomListReceiver extends Thread {
                                         roomList[i].setPlayer1(msg[5+i]);
                                         roomList[i].setPlayer2(msg[6+i]);
                                     }
-                                    listener.roomListReceived(roomList);
+//                                    listener.roomListReceived(roomList);
                                     break;
                                 default:
                                     System.out.println("Incorrect message: " + String.join(";",msg));
@@ -48,12 +47,13 @@ public class ServerRoomListReceiver extends Thread {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                done = true;
             }
             if(this.isInterrupted()){
                 done = true;
             }
         }
         socket.close();
+        System.out.println("Login receiver stoped");
     }
 }

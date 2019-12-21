@@ -4,6 +4,7 @@ import backend.logic.Room;
 import frontend.*;
 import gui.MainWindowController;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -15,21 +16,12 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.util.Optional;
 
-public class RoomListController implements IServerRoomListListener, IBroadcastListener {
+public class RoomListController{
 
     @FXML public ListView list;
     protected MainWindowController parent;
     protected String name;
     protected ServerRoomListReceiver receiver;
-
-    public RoomListController() {
-        try {
-            receiver = new ServerRoomListReceiver(this);
-            receiver.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void setParent(MainWindowController parent) {
         this.parent = parent;
@@ -37,7 +29,6 @@ public class RoomListController implements IServerRoomListListener, IBroadcastLi
 
     @FXML
     public void initialize() {
-        BroadcastReceiver.getInstance().addListener(this);
         list.setCellFactory(new Callback<ListView<Room>, ListCell<Room>>() {
 
             @Override
@@ -73,6 +64,11 @@ public class RoomListController implements IServerRoomListListener, IBroadcastLi
         Room item = ((Room)list.getSelectionModel().getSelectedItem());
         if(null!=item){
             System.out.println(item.getName());
+            try {
+                Sender.getInstance().send(this.name.trim() + ";game;joinRoom;" + item.getName().trim());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -86,14 +82,13 @@ public class RoomListController implements IServerRoomListListener, IBroadcastLi
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(name -> {
             try {
-                Sender.getInstance().send(this.name.trim() + ";game;roomList;create;" + name);
+                Sender.getInstance().send(this.name.trim() + ";game;roomList;create;" + name.trim());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
     }
 
-    @Override
     public void roomListReceived(Room[] rooms) {
         list.getItems().addAll(rooms);
     }
@@ -107,30 +102,65 @@ public class RoomListController implements IServerRoomListListener, IBroadcastLi
         }
     }
 
-    @Override
-    public void listen(byte[] msg) {
-        RoomListController _this = this;
-        Platform.runLater(new Runnable() {
-            public void run() {
-                String[] s = new String(msg).split(";");
-                if(s[1].equals("game")) {
-                    switch(s[2]){
-                        case "roomList":
-                            switch (s[3]){
-                                case "create":
-                                    if(s[4].equals("ok")){
-                                        System.out.println("Tworzymy pokój " + s[5].trim());
-                                        Room r = new Room(s[5]);
-                                        r.setPlayer1(_this.name);
-                                        list.getItems().add(r);
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
+//    public void listen(byte[] msg) {
+//        RoomListController _this = this;
+//        Platform.runLater(new Runnable() {
+//            public void run() {
+//                System.out.println("Roomlsit controller listen to " + new String(msg));
+//                String[] s = new String(msg).split(";");
+//                if(s[1].equals("game")) {
+//                    switch(s[2].trim()){
+//                        case "roomList":
+//                            switch (s[3].trim()){
+//                                case "create":
+//                                    if(s[4].equals("ok")){
+//                                        System.out.println("Tworzymy pokój " + s[5].trim());
+//                                        Room r = new Room(s[5]);
+//                                        r.setPlayer1(_this.name);
+//                                        list.getItems().add(r);
+//                                    }
+//                                    break;
+//                            }
+//                            break;
+//                        case "joinRoom":
+//                            for(Object room : list.getItems()){
+//                                Room r = (Room) room;
+//                                if(r.getName().equals(s[4].trim())){
+//                                    if(s[3].equals("p1")) {
+//                                        r.setPlayer1(s[5]);
+//                                        System.out.println("Room " + s[4].trim() + ": joining " + s[5].trim() + " as Player1");
+//                                    }
+//                                    else {
+//                                        r.setPlayer2(s[5]);
+//                                        System.out.println("Room " + s[4].trim() + ": joining " + s[5].trim() + " as Player2");
+//                                    }
+//                                    receiver.interrupt();
+//                                    list.refresh();
+//                                    parent.enterRoom(s[4].trim());
+//                                }
+//                            }
+//                            break;
+//                    }
+//
+//                }
+//            }
+//        });
+//    }
 
-                }
+    public void enterRoom(String roomName, boolean p1, String login) {
+        for (Room room : (ObservableList<Room>) list.<Room>getItems()) {
+            if (room.getName().equals(roomName)) {
+                if (p1) room.setPlayer1(login);
+                else room.setPlayer2(login);
+                list.refresh();
+                break;
             }
-        });
+        }
+    }
+
+    public void createRoom(String newRoomName) {
+        Room r = new Room(newRoomName);
+        r.setPlayer1(this.name);
+        list.getItems().add(r);
     }
 }
