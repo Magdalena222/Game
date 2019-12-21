@@ -5,9 +5,9 @@ public class Room {
     String player1;
     String player2;
 
-    public Room(String name) {
+    public Room(String name, String p1) {
         this.name = name;
-        player1 = "Wolny";
+        player1 = p1;
         player2 = "Wolny";
     }
 

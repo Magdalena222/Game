@@ -14,7 +14,7 @@ public class ChatMessageHandler implements IMessageHandler{
     public void handle(String[] msg) {
         System.out.println("Received message '" + msg[2].trim() +"' from " + msg[0]);
         try {
-            new Broadcast().send(String.join(";", msg).getBytes());
+            Broadcast.getInstance().send(String.join(";", msg).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

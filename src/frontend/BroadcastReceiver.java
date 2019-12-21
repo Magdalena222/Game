@@ -32,5 +32,6 @@ public class BroadcastReceiver extends Thread {
                 break;
             }
         }
+        System.out.println("Broadcast receiver closed");
     }
 }

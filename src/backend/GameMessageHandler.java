@@ -37,6 +37,10 @@ public class GameMessageHandler implements IMessageHandler{
                             System.err.println("Unrecognised message!");
                     }
                     break;
+
+                case "joinRoom":
+                    server.joinRoom(msg[3], msg[0]);
+                    break;
                 default:
                     System.err.println("Unrecognised message!");
             }

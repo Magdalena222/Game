@@ -1,6 +1,7 @@
 package backend;
 
 import backend.logic.Room;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 import java.net.*;
@@ -22,7 +23,7 @@ public class Server extends Thread {
         this.name = name;
         this.server = new DatagramSocket(666);
         rooms = new HashMap<String, Room>();
-        rooms.put("Koko", new Room("Koko"));
+        rooms.put("Koko", new Room("Koko", "McKing"));
     }
 
     public void setHandler(IMessageHandler handler) {
@@ -82,13 +83,45 @@ public class Server extends Thread {
     public void sendRoomList(String name) {
         String roomsString = name+";game;roomList;all";
         for (Room room:rooms.values()) {
-            roomsString = roomsString + ";" + room.getName() + ";" + room.getPlayer1() + ";" + room.getPlayer2();
+            roomsString = roomsString + ";" + room.getName().trim() + ";" + room.getPlayer1().trim() + ";" + room.getPlayer2().trim();
         }
         ClientInfo clientInfo = clients.get(name);
         try {
             send(roomsString.getBytes(), clientInfo.address, clientInfo.port);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void joinRoom(String roomName, String login){
+        if(rooms.containsKey(roomName.trim())){
+            System.out.println("Rooms containe");
+            Room room = rooms.get(roomName.trim());
+            if(room.getPlayer1().equals("Wolny")){
+                System.out.println("Pierwszy wolny");
+                room.setPlayer1(login);
+                try {
+                    Broadcast.getInstance().send(("server;game;joinRoom;p1;"+roomName.trim()+";"+login.trim()).getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else if(room.getPlayer2().equals("Wolny")){
+                System.out.println("Drugi wolny");
+                room.setPlayer2(login);
+                try {
+                    Broadcast.getInstance().send(("server;game;joinRoom;p2;"+roomName.trim()+";"+login.trim()).getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                try {
+                    send(("server;game;joinRoom;"+roomName.trim()+";fail").getBytes(), clients.get(login).address, clients.get(login).port);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else{
+            System.out.println("Rooms not containe");
         }
     }
 
@@ -101,7 +134,8 @@ public class Server extends Thread {
             }
         }else{
             try {
-                new Broadcast().send(("server;game;roomList;create;ok;"+roomName+";"+clientName).getBytes());
+                rooms.put(roomName, new Room(roomName, clientName));
+                Broadcast.getInstance().send(("server;game;roomList;create;ok;"+roomName+";"+clientName).getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
