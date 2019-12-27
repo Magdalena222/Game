@@ -12,11 +12,18 @@ public class ChatMessageHandler implements IMessageHandler{
 
     @Override
     public void handle(String[] msg) {
-        System.out.println("Received message '" + msg[2].trim() +"' from " + msg[0]);
-        try {
-            Broadcast.getInstance().send(String.join(";", msg).getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(msg[1].equals("chat")) {
+            try {
+                Broadcast.getInstance().send(String.join(";", msg).getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if(msg[1].equals("rchat")) {
+            try {
+                server.sendToRoom(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -30,6 +30,9 @@ public class MessageHandler implements IMessageHandler{
             case "chat":
                 chatHandler.handle(msg);
                 break;
+            case "rchat":
+                chatHandler.handle(msg);
+                break;
             case "game":
                 gameHandler.handle(msg);
                 break;

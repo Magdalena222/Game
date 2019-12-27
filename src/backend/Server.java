@@ -121,7 +121,7 @@ public class Server extends Thread {
                 }
             }
         }else{
-            System.out.println("Rooms not containe");
+            System.out.println("Rooms not containe " + roomName.trim());
         }
     }
 
@@ -139,6 +139,22 @@ public class Server extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void sendToRoom(String[] msg) throws IOException {
+        if(msg.length>2){
+            if(rooms.containsKey(msg[0])){
+                Room room = rooms.get(msg[0]);
+                if(!room.getPlayer1().equals("Wolny"))
+                    send(String.join(";", msg).getBytes(), clients.get(room.getPlayer1()).address, clients.get(room.getPlayer1()).port);
+                if(!room.getPlayer2().equals("Wolny"))
+                    send(String.join(";", msg).getBytes(), clients.get(room.getPlayer2()).address, clients.get(room.getPlayer2()).port);
+            }else{
+                System.err.println("There is no room named " + msg[0]);
+            }
+        }else{
+            System.err.println("Message to short " + String.join(";", msg));
         }
     }
 }
