@@ -22,6 +22,7 @@ public class RoomListController{
     protected MainWindowController parent;
     protected String name;
     protected ServerRoomListReceiver receiver;
+    Room activeRoom;
 
     public void setParent(MainWindowController parent) {
         this.parent = parent;
@@ -60,16 +61,21 @@ public class RoomListController{
     }
 
     @FXML
-    public void join(ActionEvent e){
-        Room item = ((Room)list.getSelectionModel().getSelectedItem());
-        if(null!=item){
-            System.out.println(item.getName());
-            try {
-                Sender.getInstance().send(this.name.trim() + ";game;joinRoom;" + item.getName().trim());
-            } catch (IOException ex) {
-                ex.printStackTrace();
+    public synchronized void join(ActionEvent e){
+        RoomListController _this = this;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Room item = ((Room)list.getSelectionModel().getSelectedItem());
+                if(null!=item){
+                    try {
+                        Sender.getInstance().send(_this.name.trim() + ";game;joinRoom;" + item.getName().trim());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
-        }
+        });
     }
 
     @FXML
@@ -89,8 +95,14 @@ public class RoomListController{
         });
     }
 
-    public void roomListReceived(Room[] rooms) {
-        list.getItems().addAll(rooms);
+    public synchronized void roomListReceived(Room[] rooms) {
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                list.getItems().addAll(rooms);
+            }
+        });
     }
 
     public void setName(String name) {
@@ -148,8 +160,11 @@ public class RoomListController{
 //    }
 
     public void enterRoom(String roomName, boolean p1, String login) {
+        RoomListController _this = this;
         for (Room room : (ObservableList<Room>) list.<Room>getItems()) {
-            if (room.getName().equals(roomName)) {
+            if (room.getName().equals(roomName.trim())) {
+                System.out.println("Setting active Room " + room.getName());
+                _this.activeRoom = room;
                 if (p1) room.setPlayer1(login);
                 else room.setPlayer2(login);
                 list.refresh();
@@ -159,8 +174,18 @@ public class RoomListController{
     }
 
     public void createRoom(String newRoomName) {
-        Room r = new Room(newRoomName);
-        r.setPlayer1(this.name);
-        list.getItems().add(r);
+        RoomListController _this = this;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Room r = new Room(newRoomName);
+                r.setPlayer1(_this.name);
+                list.getItems().add(r);
+            }
+        });
+    }
+
+    public Room getActiveRoom(){
+        return activeRoom;
     }
 }

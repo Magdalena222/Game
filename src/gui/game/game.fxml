@@ -3,11 +3,112 @@
 <?import javafx.scene.layout.*?>
 
 
-<BorderPane xmlns="http://javafx.com/javafx"
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minWidth="800.0" maxWidth="800.0"
+            minWidth="400.0" maxWidth="400.0"
             minHeight="400.0" maxHeight="400.0"
             fx:controller="gui.game.GameController"
             fx:id="mainPane" >
 
-</BorderPane>
+    <children>
+
+        <Label layoutX="117.0" layoutY="8.0" text="Koło" textFill="#b2b2b280">
+            <font>
+                <Font name="Bank Gothic Light BT" size="85.0" />
+            </font></Label>
+        <Label layoutX="120.0" layoutY="72.0" text="Fortuny" textFill="#4d4b4b">
+            <font>
+                <Font name="Bank Gothic Light BT" size="38.0" />
+            </font>
+        </Label>
+        <VBox fx:id="words" layoutX="10.0" layoutY="140.0" spacing="10" minWidth="380" maxWidth="380">
+        </VBox>
+
+        <Label fx:id="p1Label"
+               layoutX="10.0"
+               layoutY="300.0"
+               text="Player1"
+               textFill="#00ff00ff"
+               minWidth="120"
+               maxWidth="120"
+               minHeight="40"
+               maxHeight="40"
+               alignment="CENTER">
+            <font>
+                <Font name="Aclonica" size="20.0" />
+            </font></Label>
+        <Label fx:id="p1Points"
+               layoutX="10.0"
+               layoutY="320.0"
+               text="1000 zł"
+               textFill="#000000ff"
+               minWidth="120"
+               maxWidth="120"
+               minHeight="40"
+               maxHeight="40"
+               alignment="CENTER">
+            <font>
+                <Font name="Aclonica" size="18.0" />
+            </font></Label>
+
+        <Label fx:id="p2Label"
+               layoutX="280.0"
+               layoutY="300.0"
+               text="Player2Player2Player2"
+               textFill="#0000ffff"
+               minWidth="120"
+               maxWidth="120"
+               minHeight="40"
+               maxHeight="40"
+               alignment="CENTER">
+            <font>
+                <Font name="Aclonica" size="20.0" />
+            </font></Label>
+        <Label fx:id="p2Points"
+               layoutX="280.0"
+               layoutY="320.0"
+               text="1000 zł"
+               textFill="#000000ff"
+               minWidth="120"
+               maxWidth="120"
+               minHeight="40"
+               maxHeight="40"
+               alignment="CENTER">
+            <font>
+                <Font name="Aclonica" size="18.0" />
+            </font></Label>
+        <Button fx:id="price" text="1000 zł" layoutX="140" layoutY="300" minWidth="130" maxWidth="130"
+            disable="true"
+                style="-fx-background-color: #ff0000,
+                    linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+                    linear-gradient(#20262b, #191d22),
+                    radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+                    -fx-background-radius: 5,4,3,5;
+                    -fx-background-insets: 0,1,2,0;
+                    -fx-text-fill: white;
+                    -fx-effect: dropshadow( three-pass-box , rgba(1,1,1,0.6) , 5, 0.0 , 0 , 1 );
+                    -fx-font-family: 'Arial';
+                    -fx-font-size: 18px;
+                    -fx-padding: 10 20 10 20;"
+        >
+            <font>
+                <Font name="Aclonica" size="18.0" />
+            </font>
+        </Button>
+        <HBox layoutX="0" layoutY="370" minWidth="400" maxWidth="410" minHeight="50" maxHeight="50" spacing="10">
+            <children>
+                <Button text="Opuść pokój"  prefWidth="200" HBox.hgrow="ALWAYS">
+                </Button>
+                <Button text="Zgadnij literę"  prefWidth="200" HBox.hgrow="ALWAYS">
+                </Button>
+                <Button text="Zgadnij hasło"  prefWidth="200" HBox.hgrow="ALWAYS">
+                </Button>
+            </children>
+        </HBox>
+    </children>
+
+</AnchorPane>

@@ -27,7 +27,8 @@ public class ServerReceiver extends Thread {
                 socket.receive(packet);
                 listener.listen(packet.getData());
             } catch (Exception e) {
-                System.out.println("Server timeout");
+                System.out.println("Server");
+                e.printStackTrace();
             }
             if(this.isInterrupted()){
                 done = true;

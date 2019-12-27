@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minWidth="800.0" maxWidth="800.0"
+            minHeight="400.0" maxHeight="400.0"
+            fx:controller="gui.game.RoomController"
+            fx:id="mainPane" >
+
+</BorderPane>

@@ -41,6 +41,15 @@ public class GeneralChatController implements IBroadcastListener {
         });
     }
 
+    public synchronized void message(String from, String msg){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                textArea.setText(from + ": " + msg + "\n" +textArea.getText());
+            }
+        });
+    }
+
     public void setName(String name) {
         this.name = name;
     }

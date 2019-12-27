@@ -1,24 +1,18 @@
 package main;
 
-import backend.ChatMessageHandler;
-import backend.GameMessageHandler;
-import backend.MessageHandler;
-import backend.Server;
 import backend.logic.Room;
 import frontend.BroadcastReceiver;
-import frontend.Sender;
 import frontend.ServerReceiver;
 import gui.LoginController;
 import gui.MainWindowController;
 import gui.game.GameController;
+import gui.game.RoomController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class Main extends Application {
 
@@ -29,10 +23,13 @@ public class Main extends Application {
     LoginController loginPage;
     Pane loginPane;
 
-    MainWindowController roomsPage;
+    MainWindowController mainController;
     Pane mainPane;
 
-    GameController gamePage;
+    RoomController roomController;
+    Pane roomPane;
+
+    GameController gameController;
     Pane gamePane;
 
     @Override
@@ -50,17 +47,25 @@ public class Main extends Application {
         loginPage = lp.getController();
         loginPage.setParent(this);
 
-        FXMLLoader rp = new FXMLLoader(getClass().getResource("../gui/MainWindow.fxml"));
-        mainPane = rp.load();
-        roomsPage = rp.getController();
-        roomsPage.setParent(this);
+        FXMLLoader mp = new FXMLLoader(getClass().getResource("../gui/MainWindow.fxml"));
+        mainPane = mp.load();
+        mainController = mp.getController();
+        mainController.setParent(this);
+
+        FXMLLoader rp = new FXMLLoader(getClass().getResource("../gui/game/room.fxml"));
+        roomPane = rp.load();
+        roomController = rp.getController();
+        roomController.setParent(this);
 
         FXMLLoader gp = new FXMLLoader(getClass().getResource("../gui/game/game.fxml"));
         gamePane = gp.load();
-        gamePage = gp.getController();
-        gamePage.setParent(this);
+        gameController = gp.getController();
+        gameController.setParent(this);
+        gameController.setPassword("koko loro");
+        gameController.guess('R');
 
         primaryStage.setTitle("Koło fortuny");
+//        primaryStage.setScene(new Scene(gamePane, 400, 400));
         primaryStage.setScene(new Scene(loginPane, 800, 400));
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -80,88 +85,99 @@ public class Main extends Application {
             @Override
             public void run() {
                 primaryStage.setScene(new Scene(mainPane, 800,400));
-                roomsPage.setName(name);
+                mainController.setName(name);
             }
         });
     }
 
     protected void enterRoom(String name){
-        roomsPage.enterGameRoom(name);
+        mainController.enterGameRoom(name);
     }
 
     public synchronized void listen(byte[] data) {
-        String fullMsg = new String(data);
-        System.out.println("Received from server: " + fullMsg);
-        String[] msg = new String(data).split(";");
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                String fullMsg = new String(data);
+                System.out.println("Received from server: " + fullMsg);
+                String[] msg = new String(data).split(";");
 
-        if(msg.length < 2){
-            System.err.println("Message to short: " + fullMsg);
-            return;
-        }
-
-        switch (msg[1]){
-            case "game":
-                if(msg.length<3){
+                if (msg.length < 2) {
                     System.err.println("Message to short: " + fullMsg);
                     return;
                 }
-                switch (msg[2]){
-                    case "login":
-                        if(msg.length<5){
+
+                switch (msg[1]) {
+                    case "chat":
+                        if (msg.length < 3) {
                             System.err.println("Message to short: " + fullMsg);
                             return;
                         }
-
-                        switch (msg[3]){
-                            case "ok":
-                                login(msg[4]);
-                                break;
-                            case "fail":
-                                if(msg.length<6){
+                        mainController.generalMessage(msg[0].trim(), msg[2].trim());
+                        break;
+                    case "game":
+                        if (msg.length < 3) {
+                            System.err.println("Message to short: " + fullMsg);
+                            return;
+                        }
+                        switch (msg[2]) {
+                            case "login":
+                                if (msg.length < 5) {
                                     System.err.println("Message to short: " + fullMsg);
                                     return;
                                 }
-                                loginPage.loginFailed(msg[5]);
-                                break;
-                        }
-                        break;
-                    case "roomList":
-                        if(msg.length<5){
-                            System.err.println("Message to short: " + fullMsg);
-                            return;
-                        }
-                        switch (msg[3]){
-                            case "all":
-                                Room[] roomList = new Room[(msg.length-3)/3];
-                                for(int i = 0; i<(msg.length-3)/3; i++){
-                                    roomList[i] = new Room(msg[4+i*3]);
-                                    roomList[i].setPlayer1(msg[5+i*3]);
-                                    roomList[i].setPlayer2(msg[6+i*3]);
-                                }
-                                    roomsPage.roomListReceived(roomList);
-                                break;
-                            case "create":
-                                switch (msg[4]){
+
+                                switch (msg[3]) {
                                     case "ok":
-                                        if(msg.length<6){
+                                        login(msg[4]);
+                                        break;
+                                    case "fail":
+                                        if (msg.length < 6) {
                                             System.err.println("Message to short: " + fullMsg);
                                             return;
                                         }
-                                        roomsPage.createRoom(msg[5]);
-
+                                        loginPage.loginFailed(msg[5]);
+                                        break;
                                 }
-                        }
-                        break;
-                    case "joinRoom":
-                        roomsPage.enterRoom(msg[4], msg[3].equals("p1"), msg[5]);
-                        if(msg[5].trim().equals(roomsPage.getName().trim())){
-                            enterRoom(msg[4]);
-                        }
-                        break;
+                                break;
+                            case "roomList":
+                                if (msg.length < 5) {
+                                    System.err.println("Message to short: " + fullMsg);
+                                    return;
+                                }
+                                switch (msg[3]) {
+                                    case "all":
+                                        Room[] roomList = new Room[(msg.length - 3) / 3];
+                                        for (int i = 0; i < (msg.length - 3) / 3; i++) {
+                                            roomList[i] = new Room(msg[4 + i * 3]);
+                                            roomList[i].setPlayer1(msg[5 + i * 3]);
+                                            roomList[i].setPlayer2(msg[6 + i * 3]);
+                                        }
+                                        mainController.roomListReceived(roomList);
+                                        break;
+                                    case "create":
+                                        switch (msg[4]) {
+                                            case "ok":
+                                                if (msg.length < 6) {
+                                                    System.err.println("Message to short: " + fullMsg);
+                                                    return;
+                                                }
+                                                mainController.createRoom(msg[5]);
 
+                                        }
+                                }
+                                break;
+                            case "joinRoom":
+                                mainController.enterRoom(msg[4], msg[3].equals("p1"), msg[5]);
+                                if (msg[5].trim().equals(mainController.getName().trim())) {
+                                    enterRoom(msg[4]);
+                                }
+                                break;
+
+                        }
+                        break;
                 }
-                break;
-        }
+            }});
     }
 
 }

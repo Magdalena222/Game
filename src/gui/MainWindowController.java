@@ -2,12 +2,11 @@ package gui;
 
 import backend.logic.Room;
 import gui.chat.GeneralChatController;
-import gui.game.GameController;
+import gui.game.RoomController;
 import gui.game.RoomListController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import main.Main;
@@ -27,7 +26,7 @@ public class MainWindowController {
     RoomListController roomListController;
 
     Pane gamePane;
-    GameController gameController;
+    RoomController gameController;
 
     FXMLLoader generalChat;
 
@@ -42,7 +41,7 @@ public class MainWindowController {
             roomListController = rl.getController();
             roomListController.setParent(this);
 
-            FXMLLoader gc = new FXMLLoader(getClass().getResource("game/game.fxml"));
+            FXMLLoader gc = new FXMLLoader(getClass().getResource("game/room.fxml"));
             gamePane = gc.load();
             gameController = gc.getController();
             gameController.setParent(parent);
@@ -71,6 +70,12 @@ public class MainWindowController {
 
     public void enterRoom(String roomName, boolean p1, String login){
         roomListController.enterRoom(roomName, p1, login);
+        Room room = roomListController.getActiveRoom();
+        gameController.setRoomName(roomName);
+        gameController.setName(login);
+        gameController.setParent(parent);
+        gameController.setRoom(room);
+        enterGameRoom(roomName);
     }
 
     public void roomListReceived(Room[] rooms) {
@@ -89,6 +94,10 @@ public class MainWindowController {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                System.out.println("enterGameRoom");
+                setRoomName(name);
+                gameController.setRoomName(name);
+                gameController.setName(getName());
                 mainPane.setCenter(gamePane);
             }
         });
@@ -102,5 +111,9 @@ public class MainWindowController {
                 mainPane.setCenter(gamePane);
             }
         });
+    }
+
+    public void generalMessage(String from, String msg) {
+        generalChat.<GeneralChatController>getController().message(from, msg);
     }
 }
