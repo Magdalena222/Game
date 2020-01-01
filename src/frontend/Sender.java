@@ -2,6 +2,7 @@ package frontend;
 
 import backend.ClientInfo;
 import backend.Server;
+import main.GameSettings;
 
 import java.io.IOException;
 import java.net.*;
@@ -28,7 +29,7 @@ public class Sender {
 
     public void send(String msg) throws IOException {
         int msgLenght = msg.length();
-        DatagramPacket p = new DatagramPacket(msg.getBytes(), msgLenght, InetAddress.getByName("localhost"), 666);
+        DatagramPacket p = new DatagramPacket(msg.getBytes(), msgLenght, GameSettings.getInstance().getServer().getAdress(), GameSettings.getInstance().getServer().getPort());
         socket.send(p);
     }
 

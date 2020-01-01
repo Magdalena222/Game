@@ -1,0 +1,15 @@
+<?xml version = "1.0"?>
+<settings>
+    <setting name="server">
+        <address>localhost</address>
+        <port>666</port>
+    </setting>
+    <setting name="broadcast">
+        <address>230.0.0.0</address>
+        <port>755</port>
+    </setting>
+    <setting name="gameReceiver">
+        <address>localhost</address>
+        <port>477</port>
+    </setting>
+</settings>

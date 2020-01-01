@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import main.GameSettings;
 import main.Main;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class LoginController{
     @FXML
     private void signinbtnclick(ActionEvent event) throws Exception{
         String nickText = nick.getText();
-        Sender.getInstance().send(nickText.trim() + ";game;login;localhost;" + ServerReceiver.PORT);
+        Sender.getInstance().send(nickText.trim() + ";game;login;localhost;" + GameSettings.getInstance().getGameReceiver().getPort());
     }
 
     public void loginFailed(String msg) {

@@ -1,5 +1,7 @@
 package backend;
 
+import main.GameSettings;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.HashMap;
@@ -15,7 +17,7 @@ public class Server extends Thread {
     public Server(String name) throws IOException {
         this.clients = new HashMap<String, ClientInfo>();
         this.name = name;
-        this.server = new DatagramSocket(666);
+        this.server = new DatagramSocket(GameSettings.getInstance().getServer().getPort());
     }
 
     public void setHandler(IMessageHandler handler) {

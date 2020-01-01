@@ -1,18 +1,17 @@
 package frontend;
 
 import backend.logic.Room;
+import main.GameSettings;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class ServerRoomListReceiver extends Thread {
-
-    public static final int PORT = 477;
     protected DatagramSocket socket;
 
     public ServerRoomListReceiver() throws IOException {
-        socket = new DatagramSocket(PORT);
+        socket = new DatagramSocket(GameSettings.getInstance().getGameReceiver().getPort());
         socket.setSoTimeout(1000);
     }
 

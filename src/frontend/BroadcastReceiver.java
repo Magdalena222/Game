@@ -1,5 +1,6 @@
 package frontend;
 
+import main.GameSettings;
 import main.Main;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class BroadcastReceiver extends Thread {
     private static BroadcastReceiver instance;
 
     public BroadcastReceiver(Main main) throws IOException {
-        socket = new MulticastSocket(755);
+        socket = new MulticastSocket(GameSettings.getInstance().getBroadcast().getPort());
         socket.setSoTimeout(10000);
         InetAddress group = InetAddress.getByName("230.0.0.0");
         socket.joinGroup(group);

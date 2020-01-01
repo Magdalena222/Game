@@ -1,5 +1,6 @@
 package frontend;
 
+import main.GameSettings;
 import main.Main;
 
 import java.io.IOException;
@@ -7,13 +8,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class ServerReceiver extends Thread {
-
-    public static final int PORT = 477;
     protected Main listener;
     protected DatagramSocket socket;
 
     public ServerReceiver(Main listener) throws IOException {
-        socket = new DatagramSocket(PORT);
+        socket = new DatagramSocket(GameSettings.getInstance().getGameReceiver().getPort());
         socket.setSoTimeout(10000);
         this.listener = listener;
     }
