@@ -1,6 +1,7 @@
 package backend;
 
 import backend.logic.Room;
+import main.GameSettings;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class Server extends Thread {
     public Server(String name) throws IOException {
         this.clients = new HashMap<String, ClientInfo>();
         this.name = name;
-        this.server = new DatagramSocket(666);
+        this.server = new DatagramSocket(GameSettings.getInstance().getServer().getPort());
         rooms = new HashMap<String, Room>();
         rooms.put("Koko", new Room("Koko", "McKing"));
     }
@@ -94,6 +95,11 @@ public class Server extends Thread {
     }
 
     public void joinRoom(String roomName, String login){
+        System.out.println("Serching for room to join " + roomName.trim());
+        for (String rn: rooms.keySet()
+        ) {
+            System.out.println(rn);
+        }
         if(rooms.containsKey(roomName.trim())){
             System.out.println("Rooms containe");
             Room room = rooms.get(roomName.trim());
@@ -126,7 +132,12 @@ public class Server extends Thread {
     }
 
     public void createRoom(String clientName, String roomName){
-        if(rooms.containsKey(roomName)) {
+        System.out.println("Serching for room to create " + roomName.trim());
+        for (String rn: rooms.keySet()
+        ) {
+            System.out.println(rn);
+        }
+        if(rooms.containsKey(roomName.trim())) {
             try {
                 send("server;game;roomList;create;failed;Istnieje już pokój o podanej nazwie".getBytes(), clients.get(clientName).address, clients.get(clientName).port);
             } catch (IOException e) {
@@ -134,7 +145,7 @@ public class Server extends Thread {
             }
         }else{
             try {
-                rooms.put(roomName, new Room(roomName, clientName));
+                rooms.put(roomName.trim(), new Room(roomName.trim(), clientName.trim()));
                 Broadcast.getInstance().send(("server;game;roomList;create;ok;"+roomName+";"+clientName).getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
