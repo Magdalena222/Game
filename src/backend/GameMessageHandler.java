@@ -33,6 +33,9 @@ public class GameMessageHandler implements IMessageHandler{
                         case "create":
                             server.createRoom(msg[0], msg[4]);
                             break;
+                        case "leave":
+                            server.leaveRoom(msg[0].trim(), msg[4].trim());
+                            break;
                         default:
                             System.err.println("Unrecognised message!");
                     }
@@ -40,6 +43,12 @@ public class GameMessageHandler implements IMessageHandler{
 
                 case "joinRoom":
                     server.joinRoom(msg[3], msg[0]);
+                    break;
+                case "cg":
+                    server.guessChar(msg[0].trim(),msg[3].trim(),msg[4].trim());
+                    break;
+                case "gp":
+                    server.guessPass(msg[0].trim(),msg[3].trim(),msg[4].trim());
                     break;
                 default:
                     System.err.println("Unrecognised message!");

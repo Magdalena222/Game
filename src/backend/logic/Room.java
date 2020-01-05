@@ -4,11 +4,13 @@ public class Room {
     String name;
     String player1;
     String player2;
+    Game game;
 
     public Room(String name, String p1) {
         this.name = name;
         player1 = p1;
         player2 = "Wolny";
+        game = new Game();
     }
 
     public String getName() {
@@ -33,5 +35,9 @@ public class Room {
 
     public void setPlayer2(String player2) {
         this.player2 = player2;
+    }
+
+    public Game getGame() {
+        return game;
     }
 }
