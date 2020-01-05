@@ -52,7 +52,7 @@ public class WordComponent extends HBox{
         while(pos>=0){
             pos = word.indexOf(c, pos);
             if(pos>=0){
-                letters[pos].setText(String.valueOf(ch));
+                letters[pos].setText(String.valueOf(c));
                 num++;
                 hpass.setCharAt(pos, c);
                 pass.setCharAt(pos, '#');

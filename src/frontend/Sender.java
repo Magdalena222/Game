@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.*;
 
 public class Sender {
-    private final int PORT = 999;
+    private final int PORT = 998;
     private DatagramSocket socket;
     private static Sender instance;
 
@@ -28,6 +28,7 @@ public class Sender {
     }
 
     public void send(String msg) throws IOException {
+        System.out.println("Sending " + msg);
         int msgLenght = msg.length();
         DatagramPacket p = new DatagramPacket(msg.getBytes(), msgLenght, GameSettings.getInstance().getServer().getAdress(), GameSettings.getInstance().getServer().getPort());
         socket.send(p);

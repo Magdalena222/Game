@@ -19,6 +19,7 @@ public class Main extends Application {
     protected Stage primaryStage;
     private BroadcastReceiver breceiver;
     private ServerReceiver sreceiver;
+    private String loginName;
 
     LoginController loginPage;
     Pane loginPane;
@@ -61,8 +62,6 @@ public class Main extends Application {
         gamePane = gp.load();
         gameController = gp.getController();
         gameController.setParent(this);
-        gameController.setPassword("koko loro");
-        gameController.guess('R');
 
         primaryStage.setTitle("Koło fortuny");
 //        primaryStage.setScene(new Scene(gamePane, 400, 400));
@@ -81,6 +80,7 @@ public class Main extends Application {
     }
 
     public void login(String name){
+        this.loginName = name;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -120,7 +120,7 @@ public class Main extends Application {
                             System.err.println("Message to short: " + fullMsg);
                             return;
                         }
-                        switch (msg[2]) {
+                        switch (msg[2].trim()) {
                             case "login":
                                 if (msg.length < 5) {
                                     System.err.println("Message to short: " + fullMsg);
@@ -162,16 +162,46 @@ public class Main extends Application {
                                                     System.err.println("Message to short: " + fullMsg);
                                                     return;
                                                 }
-                                                mainController.createRoom(msg[5]);
+                                                mainController.createRoom(msg[5].trim(),msg[6].trim());
 
+                                                System.out.println("Compare " + msg[6].trim() + " and " + mainController.getName().trim());
+                                                if (msg[6].trim().equals(mainController.getName().trim())) {
+                                                    System.out.println("Wchodzimy...");
+                                                    mainController.enterRoom(msg[5].trim(), msg[3].trim().equals("p1"), mainController.getName().trim());
+//                                                enterRoom(msg[5]);
+                                                }
                                         }
+                                        break;
+                                    case "leave":
+                                        leaveRoom(msg[0], msg[4]);
+                                        break;
+                                    case "delete":
+                                        mainController.deleteRoom(msg[4].trim());
+                                        break;
                                 }
                                 break;
                             case "joinRoom":
-                                mainController.enterRoom(msg[4], msg[3].equals("p1"), msg[5]);
                                 if (msg[5].trim().equals(mainController.getName().trim())) {
-                                    enterRoom(msg[4]);
+                                    System.out.println("To chodzi o mnie :)");
+                                    mainController.enterRoom(msg[4], msg[3].equals("p1"), msg[5]);
+                                }else{
+                                    System.out.println("To chodzi o kogośtam...");
+                                    mainController.joinRoom(msg[4].trim(), msg[5].trim());
                                 }
+                                break;
+
+                            case "init":
+                                if(msg.length==3)
+                                    mainController.initGame("");
+                                else
+                                    mainController.initGame(msg[3].trim());
+                                break;
+
+                            case "cg":
+                                mainController.guessChar(msg[0].trim(),msg[3].trim(),msg[4].trim(),msg[5].trim(),msg[6].trim(),msg[7].trim());
+                                break;
+                            case "gp":
+                                mainController.guessPass(msg[3].trim(),msg[4].trim(),msg[5].trim(),msg[6].trim());
                                 break;
 
                         }
@@ -180,4 +210,19 @@ public class Main extends Application {
             }});
     }
 
+    public void leaveRoom(String name, String roomName) {
+        mainController.leaveRoom(name, roomName);
+    }
+
+    public String getLogin() {
+        return loginName;
+    }
+
+    public GameController getGameController(){
+        return gameController;
+    }
+
+    public Pane getGamePane(){
+        return gamePane;
+    }
 }

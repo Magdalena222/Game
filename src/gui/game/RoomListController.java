@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -61,21 +62,15 @@ public class RoomListController{
     }
 
     @FXML
-    public synchronized void join(ActionEvent e){
-        RoomListController _this = this;
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Room item = ((Room)list.getSelectionModel().getSelectedItem());
-                if(null!=item){
-                    try {
-                        Sender.getInstance().send(_this.name.trim() + ";game;joinRoom;" + item.getName().trim());
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
+    public synchronized void join(ActionEvent e) {
+        Room item = ((Room) list.getSelectionModel().getSelectedItem());
+        if (null != item) {
+            try {
+                Sender.getInstance().send(this.name.trim() + ";game;joinRoom;" + item.getName().trim());
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        });
+        }
     }
 
     @FXML
@@ -96,13 +91,7 @@ public class RoomListController{
     }
 
     public synchronized void roomListReceived(Room[] rooms) {
-
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                list.getItems().addAll(rooms);
-            }
-        });
+        list.getItems().addAll(rooms);
     }
 
     public void setName(String name) {
@@ -114,58 +103,13 @@ public class RoomListController{
         }
     }
 
-//    public void listen(byte[] msg) {
-//        RoomListController _this = this;
-//        Platform.runLater(new Runnable() {
-//            public void run() {
-//                System.out.println("Roomlsit controller listen to " + new String(msg));
-//                String[] s = new String(msg).split(";");
-//                if(s[1].equals("game")) {
-//                    switch(s[2].trim()){
-//                        case "roomList":
-//                            switch (s[3].trim()){
-//                                case "create":
-//                                    if(s[4].equals("ok")){
-//                                        System.out.println("Tworzymy pokój " + s[5].trim());
-//                                        Room r = new Room(s[5]);
-//                                        r.setPlayer1(_this.name);
-//                                        list.getItems().add(r);
-//                                    }
-//                                    break;
-//                            }
-//                            break;
-//                        case "joinRoom":
-//                            for(Object room : list.getItems()){
-//                                Room r = (Room) room;
-//                                if(r.getName().equals(s[4].trim())){
-//                                    if(s[3].equals("p1")) {
-//                                        r.setPlayer1(s[5]);
-//                                        System.out.println("Room " + s[4].trim() + ": joining " + s[5].trim() + " as Player1");
-//                                    }
-//                                    else {
-//                                        r.setPlayer2(s[5]);
-//                                        System.out.println("Room " + s[4].trim() + ": joining " + s[5].trim() + " as Player2");
-//                                    }
-//                                    receiver.interrupt();
-//                                    list.refresh();
-//                                    parent.enterRoom(s[4].trim());
-//                                }
-//                            }
-//                            break;
-//                    }
-//
-//                }
-//            }
-//        });
-//    }
-
     public void enterRoom(String roomName, boolean p1, String login) {
         RoomListController _this = this;
         for (Room room : (ObservableList<Room>) list.<Room>getItems()) {
-            if (room.getName().equals(roomName.trim())) {
-                System.out.println("Setting active Room " + room.getName());
-                _this.activeRoom = room;
-                if (p1) room.setPlayer1(login);
+            if (room.getName().trim().equals(roomName.trim())) {
+                if(parent.getName().trim().equals(login.trim()))
+                    _this.activeRoom = room;
+                if (room.getPlayer1().equals("Wolny") || room.getPlayer1().trim().equals(login.trim())) room.setPlayer1(login);
                 else room.setPlayer2(login);
                 list.refresh();
                 break;
@@ -173,19 +117,54 @@ public class RoomListController{
         }
     }
 
-    public void createRoom(String newRoomName) {
+    public void createRoom(String newRoomName, String login) {
         RoomListController _this = this;
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Room r = new Room(newRoomName);
-                r.setPlayer1(_this.name);
-                list.getItems().add(r);
-            }
-        });
+        Room r = new Room(newRoomName);
+        r.setPlayer1(login);
+        list.getItems().add(r);
     }
 
     public Room getActiveRoom(){
         return activeRoom;
+    }
+
+    public void leaveRoom(String name, String roomName) {
+        Room r = null;
+        ObservableList<Room> rlist = (ObservableList<Room>) list.getItems();
+        for (Room room : rlist) {
+            if (room.getName().trim().equals(roomName.trim())) {
+                r = room;
+                if (room.getPlayer1().trim().equals(name.trim())) {
+                    room.setPlayer1("Wolny");
+                }
+                if (room.getPlayer2().trim().equals(name.trim())) {
+                    room.setPlayer2("Wolny");
+                }
+                break;
+            }
+        }
+        list.setItems(rlist);
+        if(r!=null && r.getPlayer1().trim().equals("Wolny") && r.getPlayer2().trim().equals("Wolny")) list.getItems().remove(r);
+        list.refresh();
+    }
+
+    public void deleteRoom(String roomName) {
+        System.out.println("Usuwam pokój " + roomName);
+        Room r = null;
+        ObservableList<Room> rlist = (ObservableList<Room>) list.getItems();
+        for (Room room : rlist) {
+            System.out.println("szukam "+ room.getName().trim() + " = " + roomName.trim());
+            if (room.getName().trim().equals(roomName.trim())) {
+                r = room;
+                break;
+            }
+        }
+        if(r != null){
+            System.out.println("Znalazlem do usuniecia");
+            System.out.println(list.getItems().size());
+            list.getItems().remove(r);
+            System.out.println(list.getItems().size());
+        }
+        list.refresh();
     }
 }

@@ -101,11 +101,11 @@
         </Button>
         <HBox layoutX="0" layoutY="370" minWidth="400" maxWidth="410" minHeight="50" maxHeight="50" spacing="10">
             <children>
-                <Button text="Opuść pokój"  prefWidth="200" HBox.hgrow="ALWAYS">
+                <Button fx:id="leaveRoom" onAction="#leaveRoomAction" text="Opuść pokój"  prefWidth="200" HBox.hgrow="ALWAYS">
                 </Button>
-                <Button text="Zgadnij literę"  prefWidth="200" HBox.hgrow="ALWAYS">
+                <Button fx:id="guessChar" text="Zgadnij literę"  onAction="#guessCharAction" prefWidth="200" HBox.hgrow="ALWAYS">
                 </Button>
-                <Button text="Zgadnij hasło"  prefWidth="200" HBox.hgrow="ALWAYS">
+                <Button text="Zgadnij hasło"  onAction="#guessPassAction" prefWidth="200" HBox.hgrow="ALWAYS">
                 </Button>
             </children>
         </HBox>

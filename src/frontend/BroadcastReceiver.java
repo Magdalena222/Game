@@ -34,8 +34,6 @@ public class BroadcastReceiver extends Thread {
                 socket.receive(packet);
                 listener.listen(packet.getData());
             } catch (Exception e) {
-                System.out.println("Broadcast ");
-                e.printStackTrace();
             }
         }
         socket.close();

@@ -68,16 +68,6 @@ public class MainWindowController {
         this.parent = parent;
     }
 
-    public void enterRoom(String roomName, boolean p1, String login){
-        roomListController.enterRoom(roomName, p1, login);
-        Room room = roomListController.getActiveRoom();
-        gameController.setRoomName(roomName);
-        gameController.setName(login);
-        gameController.setParent(parent);
-        gameController.setRoom(room);
-        enterGameRoom(roomName);
-    }
-
     public void roomListReceived(Room[] rooms) {
         roomListController.roomListReceived(rooms);
     }
@@ -91,29 +81,61 @@ public class MainWindowController {
     }
 
     public void enterGameRoom(String name) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("enterGameRoom");
-                setRoomName(name);
-                gameController.setRoomName(name);
-                gameController.setName(getName());
-                mainPane.setCenter(gamePane);
-            }
-        });
+        setRoomName(name);
+        gameController.setRoomName(name);
+        gameController.setName(getName());
+        mainPane.setCenter(gamePane);
     }
 
-    public void createRoom(String newRoomName) {
-        roomListController.createRoom(newRoomName);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                mainPane.setCenter(gamePane);
-            }
-        });
+    public void createRoom(String newRoomName, String login) {
+        roomListController.createRoom(newRoomName, login);
     }
 
     public void generalMessage(String from, String msg) {
         generalChat.<GeneralChatController>getController().message(from, msg);
+    }
+
+    public void leaveRoom(String name, String roomName) {
+        if(name.trim().equals(parent.getLogin().trim())) mainPane.setCenter(roomPane);
+        else gameController.leaveRoom(name);
+        roomListController.leaveRoom(name, roomName);
+    }
+
+    public void enterRoom(String roomName, boolean p1, String login){
+        roomListController.enterRoom(roomName, p1, login);
+        Room room = roomListController.getActiveRoom();
+        gameController.setRoomName(roomName);
+        gameController.setName(login);
+        gameController.setParent(parent);
+        gameController.setRoom(room);
+        enterGameRoom(roomName);
+    }
+
+    public void joinRoom(String roomName, String login) {
+        roomListController.enterRoom(roomName, true, login);
+        if(null != roomName){
+            gameController.setRoom(roomListController.getActiveRoom());
+        }
+    }
+
+    public void initGame(String password) {
+        gameController.initGame(password);
+    }
+
+    public void deleteRoom(String roomName) {
+        roomListController.deleteRoom(roomName);
+    }
+
+    public void guessChar(String roomName, String player, String ch, String priceP1, String priceP2, String newPrice) {
+        if( roomName.trim().equals(roomListController.getActiveRoom().getName().trim())){
+            gameController.guessChar(player, ch, priceP1, priceP2, newPrice);
+        }
+    }
+
+    public void guessPass(String player, String status, String p1Points, String p2Points) {
+        gameController.guessPass(player,status,p1Points,p2Points);
+        if(status.toUpperCase().trim().equals("OK")){
+            mainPane.setCenter(roomPane);
+        }
     }
 }

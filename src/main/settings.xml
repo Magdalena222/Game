@@ -10,6 +10,6 @@
     </setting>
     <setting name="gameReceiver">
         <address>localhost</address>
-        <port>477</port>
+        <port>478</port>
     </setting>
 </settings>
