@@ -20,6 +20,7 @@ public class Main extends Application {
     private BroadcastReceiver breceiver;
     private ServerReceiver sreceiver;
     private String loginName;
+    private static Main instance;
 
     LoginController loginPage;
     Pane loginPane;
@@ -35,6 +36,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        instance = this;
         breceiver = new BroadcastReceiver(this);
         breceiver.start();
 
@@ -115,6 +117,13 @@ public class Main extends Application {
                         }
                         mainController.generalMessage(msg[0].trim(), msg[2].trim());
                         break;
+                    case "rchat":
+                        if (msg.length < 4) {
+                            System.err.println("Message to short: " + fullMsg);
+                            return;
+                        }
+                        mainController.roomMessage(msg[0].trim(), msg[2].trim(), msg[3].trim());
+                        break;
                     case "game":
                         if (msg.length < 3) {
                             System.err.println("Message to short: " + fullMsg);
@@ -164,11 +173,8 @@ public class Main extends Application {
                                                 }
                                                 mainController.createRoom(msg[5].trim(),msg[6].trim());
 
-                                                System.out.println("Compare " + msg[6].trim() + " and " + mainController.getName().trim());
                                                 if (msg[6].trim().equals(mainController.getName().trim())) {
-                                                    System.out.println("Wchodzimy...");
-                                                    mainController.enterRoom(msg[5].trim(), msg[3].trim().equals("p1"), mainController.getName().trim());
-//                                                enterRoom(msg[5]);
+                                                    mainController.enterRoom(msg[5].trim(), msg[3].trim().equals("p1"), Main.getInstance().getLogin().trim());
                                                 }
                                         }
                                         break;
@@ -224,5 +230,9 @@ public class Main extends Application {
 
     public Pane getGamePane(){
         return gamePane;
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }

@@ -22,7 +22,6 @@ public class RoomListController{
     @FXML public ListView list;
     protected MainWindowController parent;
     protected String name;
-    protected ServerRoomListReceiver receiver;
     Room activeRoom;
 
     public void setParent(MainWindowController parent) {
@@ -112,13 +111,13 @@ public class RoomListController{
                 if (room.getPlayer1().equals("Wolny") || room.getPlayer1().trim().equals(login.trim())) room.setPlayer1(login);
                 else room.setPlayer2(login);
                 list.refresh();
+
                 break;
             }
         }
     }
 
     public void createRoom(String newRoomName, String login) {
-        RoomListController _this = this;
         Room r = new Room(newRoomName);
         r.setPlayer1(login);
         list.getItems().add(r);
@@ -143,9 +142,8 @@ public class RoomListController{
                 break;
             }
         }
-        list.setItems(rlist);
         if(r!=null && r.getPlayer1().trim().equals("Wolny") && r.getPlayer2().trim().equals("Wolny")) list.getItems().remove(r);
-        list.refresh();
+        initialize();
     }
 
     public void deleteRoom(String roomName) {
@@ -165,6 +163,14 @@ public class RoomListController{
             list.getItems().remove(r);
             System.out.println(list.getItems().size());
         }
-        list.refresh();
+        initialize();
+    }
+
+    public Room getRoom(String roomName) {
+        for(Room room : (ObservableList<Room>) list.getItems()){
+            if(room.getName().trim().equals(roomName.trim()))
+                return room;
+        }
+        return null;
     }
 }

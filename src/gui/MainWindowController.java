@@ -44,7 +44,7 @@ public class MainWindowController {
             FXMLLoader gc = new FXMLLoader(getClass().getResource("game/room.fxml"));
             gamePane = gc.load();
             gameController = gc.getController();
-            gameController.setParent(parent);
+            gameController.setParent(Main.getInstance());
 
             generalChat = new FXMLLoader(getClass().getResource("chat/chat.fxml"));
             mainPane.setLeft(generalChat.load());
@@ -83,7 +83,7 @@ public class MainWindowController {
     public void enterGameRoom(String name) {
         setRoomName(name);
         gameController.setRoomName(name);
-        gameController.setName(getName());
+        gameController.setName(name);
         mainPane.setCenter(gamePane);
     }
 
@@ -103,18 +103,18 @@ public class MainWindowController {
 
     public void enterRoom(String roomName, boolean p1, String login){
         roomListController.enterRoom(roomName, p1, login);
-        Room room = roomListController.getActiveRoom();
-        gameController.setRoomName(roomName);
-        gameController.setName(login);
-        gameController.setParent(parent);
+        Room room = roomListController.getRoom(roomName);
+        gameController.setName(roomName);
+        gameController.setParent(Main.getInstance());
         gameController.setRoom(room);
+        gameController.setRoomName(roomName);
         enterGameRoom(roomName);
     }
 
     public void joinRoom(String roomName, String login) {
         roomListController.enterRoom(roomName, true, login);
         if(null != roomName){
-            gameController.setRoom(roomListController.getActiveRoom());
+            parent.getGameController().setRoom(roomListController.getActiveRoom());
         }
     }
 
@@ -137,5 +137,9 @@ public class MainWindowController {
         if(status.toUpperCase().trim().equals("OK")){
             mainPane.setCenter(roomPane);
         }
+    }
+
+    public void roomMessage(String roomName, String player, String message) {
+        gameController.roomMessage(roomName,player,message);
     }
 }

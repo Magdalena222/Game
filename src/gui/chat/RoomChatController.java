@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import main.Main;
 
 import java.io.IOException;
 
@@ -24,19 +25,14 @@ public class RoomChatController{
 
     }
 
-    public synchronized void message(String from, String msg){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                textArea.setText(from + ": " + msg + "\n" +textArea.getText());
-            }
-        });
+    public synchronized void message(String from, String msg) {
+        textArea.setText(from + ": " + msg + "\n" + textArea.getText());
     }
 
 
     public void onEnter(ActionEvent ae){
         try {
-            Sender.getInstance().send(roomName.trim() + ";rchat;" + name.trim() + ";" + textField.getText());
+            Sender.getInstance().send(roomName.trim() + ";rchat;" + Main.getInstance().getLogin().trim() + ";" + textField.getText());
         } catch (IOException e) {
             e.printStackTrace();
         }

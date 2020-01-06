@@ -1,12 +1,18 @@
 package main;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.*;
-import java.io.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class GameSettings {
 
@@ -43,6 +49,7 @@ public class GameSettings {
     protected Setting server;
     protected Setting broadcast;
     protected Setting gameReceiver;
+    protected Setting gameSender;
 
     private GameSettings() {
         try {
@@ -50,13 +57,11 @@ public class GameSettings {
             broadcast = new Setting(InetAddress.getByName("230.0.0.0"), 755);
             gameReceiver = new Setting(InetAddress.getByName("localhost"), 477);
 
-            System.out.println("Settings path: " + GameSettings.class.getResource("settings.xml").getFile());
             File inputFile = new File(GameSettings.class.getResource("settings.xml").getFile());
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("settings").item(0).getChildNodes();
 
             for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -95,6 +100,16 @@ public class GameSettings {
                                             .getElementsByTagName("port")
                                             .item(0)
                                             .getTextContent()));
+                        case "gameSender":
+                            gameSender = new Setting(
+                                    InetAddress.getByName(eElement
+                                            .getElementsByTagName("address")
+                                            .item(0)
+                                            .getTextContent()),
+                                    Integer.parseInt(eElement
+                                            .getElementsByTagName("port")
+                                            .item(0)
+                                            .getTextContent()));
                     }
                 }
             }
@@ -107,6 +122,8 @@ public class GameSettings {
             e.printStackTrace();
         } catch (SAXException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            System.err.println(e.getMessage());
         }
     }
 
@@ -125,5 +142,9 @@ public class GameSettings {
 
     public Setting getGameReceiver() {
         return gameReceiver;
+    }
+
+    public Setting getGameSender() {
+        return gameSender;
     }
 }

@@ -30,7 +30,7 @@ public class RoomController {
         roomChat = new FXMLLoader(getClass().getResource("../chat/roomChat.fxml"));
         try {
             mainPane.setRight(roomChat.load());
-//            roomChat.<RoomChatController>getController().setName(parent.getLogin());
+            roomChat.<RoomChatController>getController().setName(parent.getLogin());
             roomChat.<RoomChatController>getController().setRoomName(name);
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,5 +99,9 @@ public class RoomController {
                 alert.showAndWait();
             }
         }
+    }
+
+    public void roomMessage(String roomName, String player, String message) {
+        roomChat.<RoomChatController>getController().message(player, message);
     }
 }

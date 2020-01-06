@@ -8,12 +8,11 @@ import java.io.IOException;
 import java.net.*;
 
 public class Sender {
-    private final int PORT = 998;
     private DatagramSocket socket;
     private static Sender instance;
 
     private Sender() throws SocketException {
-        socket = new DatagramSocket(PORT);
+        socket = new DatagramSocket(GameSettings.getInstance().getGameSender().getPort());
     }
 
     public static Sender getInstance(){
@@ -36,7 +35,7 @@ public class Sender {
 
     public ClientInfo getClientInfo(){
         try {
-            return new ClientInfo(InetAddress.getByName("localhost"), PORT);
+            return new ClientInfo(InetAddress.getByName("localhost"), GameSettings.getInstance().getGameSender().getPort());
         }catch(IOException e){
             return null;
         }
