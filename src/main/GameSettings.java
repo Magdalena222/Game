@@ -49,6 +49,7 @@ public class GameSettings {
     protected Setting server;
     protected Setting broadcast;
     protected Setting gameReceiver;
+    protected Setting gameSender;
 
     private GameSettings() {
         try {
@@ -99,6 +100,16 @@ public class GameSettings {
                                             .getElementsByTagName("port")
                                             .item(0)
                                             .getTextContent()));
+                        case "gameSender":
+                            gameSender = new Setting(
+                                    InetAddress.getByName(eElement
+                                            .getElementsByTagName("address")
+                                            .item(0)
+                                            .getTextContent()),
+                                    Integer.parseInt(eElement
+                                            .getElementsByTagName("port")
+                                            .item(0)
+                                            .getTextContent()));
                     }
                 }
             }
@@ -131,5 +142,9 @@ public class GameSettings {
 
     public Setting getGameReceiver() {
         return gameReceiver;
+    }
+
+    public Setting getGameSender() {
+        return gameSender;
     }
 }

@@ -2,6 +2,7 @@ package frontend;
 
 import backend.ClientInfo;
 import backend.Server;
+import main.GameSettings;
 
 import java.io.IOException;
 import java.net.*;
@@ -11,7 +12,7 @@ public class Sender {
     private static Sender instance;
 
     private Sender() throws SocketException {
-        socket = new DatagramSocket(999);
+        socket = new DatagramSocket(GameSettings.getInstance().getGameSender().getPort());
     }
 
     public static Sender getInstance(){

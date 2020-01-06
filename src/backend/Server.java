@@ -221,9 +221,10 @@ public class Server extends Thread {
     }
 
     public void guessPass(String player, String roomName, String pass) {
-        Room r = rooms.get(roomName);
+        Room r = rooms.get(roomName.trim());
         if(r!=null){
-            if(pass.toUpperCase().equals(r.getGame().getPassword().toUpperCase().trim())){
+            System.out.println(pass.trim().toUpperCase() + " => " + r.getGame().getPassword().toUpperCase().trim());
+            if(pass.trim().toUpperCase().equals(r.getGame().getPassword().toUpperCase().trim())){
                 System.out.println(pass.trim().toUpperCase());
                 System.out.println(r.getGame().getPassword().toUpperCase().trim());
                 if(r.getPlayer1().equals(player))

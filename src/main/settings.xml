@@ -12,4 +12,8 @@
         <address>localhost</address>
         <port>477</port>
     </setting>
+    <setting name="gameSender">
+        <address>localhost</address>
+        <port>999</port>
+    </setting>
 </settings>
