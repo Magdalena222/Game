@@ -3,6 +3,7 @@ package gui.game;
 import backend.logic.Room;
 import frontend.Sender;
 import gui.chat.RoomChatController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -23,6 +24,8 @@ public class RoomController {
     Main parent;
     Room room;
 
+    String[] colors;
+
     @FXML
     BorderPane mainPane;
 
@@ -39,7 +42,7 @@ public class RoomController {
 
     @FXML
     public void initialize(){
-
+        this.colors = new String[]{"#ff0000", "#00ff00", "#0000ff", "#00ffff", "#ffff00"};
     }
 
     public void setParent(Main main) {
@@ -75,9 +78,28 @@ public class RoomController {
         parent.getGameController().guess(ch.charAt(0));
         parent.getGameController().p1Points.setText(priceP1);
         parent.getGameController().p2Points.setText(priceP2);
-        parent.getGameController().myTurn(player.trim().equals(parent.getLogin().trim()));
-        parent.getGameController().myTurn(player.trim().equals(parent.getLogin().trim()));
-        parent.getGameController().price.setText(newPrice);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    int ii = i;
+                    Platform.runLater(() -> {
+                        parent.getGameController().price.setText(String.valueOf(ii * 100));
+                        parent.getGameController().price.setStyle("-fx-background-color: " + colors[ii%5]);
+                    });
+                    try {
+                        Thread.currentThread().sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Platform.runLater(() -> {
+                    parent.getGameController().price.setText(newPrice);
+                    parent.getGameController().myTurn(player.trim().equals(parent.getLogin().trim()));
+                });
+            }
+        }).start();
+
     }
 
     public void guessPass(String player, String status, String p1Points, String p2Points) {
