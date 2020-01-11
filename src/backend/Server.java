@@ -24,6 +24,7 @@ public class Server extends Thread {
         this.clients = new HashMap<String, ClientInfo>();
         this.name = name;
         this.server = new DatagramSocket(GameSettings.getInstance().getServer().getPort());
+        this.server.setSoTimeout(10000);
         rooms = new HashMap<String, Room>();
         rooms.put("Koko", new Room("Koko", "McKing"));
     }
@@ -40,7 +41,6 @@ public class Server extends Thread {
                 server.receive(dp);
                 handle(dp);
             } catch (IOException e) {
-                System.out.println("Error: " + e.getMessage());
             }
             if(isInterrupted()){
                 server.close();
@@ -59,7 +59,7 @@ public class Server extends Thread {
     public String checkLogin(String nick, String host, int port){
         String msg;
         if(clients.containsKey(nick)){
-            msg = "server;game;login;fail;"+nick+";Podany login juz istnieje\n";
+            msg = "server;game;login;fail;"+nick+";Podany login juz istnieje";
         }else{
             try{
                 clients.put(nick, new ClientInfo(InetAddress.getByName(host), port, nick));
