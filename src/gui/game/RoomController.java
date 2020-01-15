@@ -78,6 +78,7 @@ public class RoomController {
         parent.getGameController().guess(ch.charAt(0));
         parent.getGameController().p1Points.setText(priceP1);
         parent.getGameController().p2Points.setText(priceP2);
+
         new Thread(new Runnable() {
             @Override
             public void run() {

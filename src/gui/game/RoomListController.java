@@ -90,6 +90,7 @@ public class RoomListController{
     }
 
     public synchronized void roomListReceived(Room[] rooms) {
+        list.getItems().clear();
         list.getItems().addAll(rooms);
     }
 

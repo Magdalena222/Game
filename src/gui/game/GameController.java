@@ -124,7 +124,7 @@ public class GameController {
                 alert.showAndWait();
             }else{
                 try {
-                    Sender.getInstance().send(parent.getLogin()+";game;cg;"+roomName+";"+name);
+                    Sender.getInstance().send(parent.getLogin().trim()+";game;cg;"+roomName.trim()+";"+name);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
