@@ -7,6 +7,7 @@ public class Game {
     String passwords[] = {"GRA O TRON", "RODZINA SOPRANO", "RODZINA OD ZARAZ", "MATRIX", "OJCIEC CHRZESTNY"};
     String password;
     String hash;
+    String originPass;
     int price;
     int p1Points;
     int p2Points;
@@ -45,6 +46,7 @@ public class Game {
         p1Points = 0;
         p2Points = 0;
         password = passwords[new Random().nextInt(passwords.length)];
+        originPass = password;
         hash = this.password.replaceAll("[A-Z]", "#");
     }
 
@@ -71,4 +73,6 @@ public class Game {
     public void setP2Points(int p2Points) {
         this.p2Points = p2Points;
     }
+
+    public String getOriginPass() { return originPass; }
 }

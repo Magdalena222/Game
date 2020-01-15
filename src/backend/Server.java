@@ -26,7 +26,6 @@ public class Server extends Thread {
         this.server = new DatagramSocket(GameSettings.getInstance().getServer().getPort());
         this.server.setSoTimeout(10000);
         rooms = new HashMap<String, Room>();
-        rooms.put("Koko", new Room("Koko", "McKing"));
     }
 
     public void setHandler(IMessageHandler handler) {
@@ -223,8 +222,8 @@ public class Server extends Thread {
     public void guessPass(String player, String roomName, String pass) {
         Room r = rooms.get(roomName.trim());
         if(r!=null){
-            System.out.println(pass.trim().toUpperCase() + " => " + r.getGame().getPassword().toUpperCase().trim());
-            if(pass.trim().toUpperCase().equals(r.getGame().getPassword().toUpperCase().trim())){
+            System.out.println(pass.trim().toUpperCase() + " => " + r.getGame().getOriginPass().trim().toUpperCase().trim());
+            if(pass.trim().toUpperCase().equals(r.getGame().getOriginPass().trim().toUpperCase().trim())){
                 System.out.println(pass.trim().toUpperCase());
                 System.out.println(r.getGame().getPassword().toUpperCase().trim());
                 if(r.getPlayer1().equals(player))
